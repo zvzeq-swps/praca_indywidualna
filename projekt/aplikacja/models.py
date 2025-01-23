@@ -26,3 +26,29 @@ class Person(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Plec(models.IntegerChoices):
+    KOBIETA = 1, 'Kobieta'
+    MEZCZYZNA = 2, 'Mężczyzna'
+    INNE = 3, 'Inne'
+
+class Stanowisko(models.Model):
+    
+    nazwa = models.CharField(max_length=60)
+    opis = models.TextField()
+
+    def __str__(self):
+        return self.nazwa
+class Osoba(models.Model):
+
+    imie = models.CharField(max_length=60)
+    nazwisko = models.CharField(max_length=60)
+    plec = models.IntegerField(choices=Plec.choices)
+    wiek = models.IntegerField()
+    data_urodzenia = models.DateField()
+    stanowisko = models.ForeignKey(Stanowisko, on_delete=models.CASCADE)
+    data_dodania = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.imie} {self.nazwisko}"
