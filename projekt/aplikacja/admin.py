@@ -3,7 +3,7 @@ from .models import Team, Person, Osoba, Stanowisko
 
 class OsobaAdmin(admin.ModelAdmin):
     readonly_fields = ('data_dodania',)
-    list_display = ('imie', 'nazwisko', 'stanowisko', 'data_dodania')
+    list_display = ('imie', 'nazwisko', 'stanowisko', 'stanowisko_display', 'data_dodania')
 
     @admin.display(description='Stanowsiko')
     def stanowisko_display(self, obj):
