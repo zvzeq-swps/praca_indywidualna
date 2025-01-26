@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 import re
@@ -55,6 +56,7 @@ class Osoba(models.Model):
     data_urodzenia = models.DateField()
     stanowisko = models.ForeignKey(Stanowisko, on_delete=models.CASCADE)
     data_dodania = models.DateTimeField(auto_now_add=True)
+    wlasciciel = models.ForeignKey(User, on_delete=models.CASCADE, related_name='osoby')
 
     class Meta:
         verbose_name_plural = "Osoby"
