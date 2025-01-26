@@ -1,4 +1,8 @@
 from django.db import models
+from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
+from django.utils import timezone
+import re
 # deklaracja statycznej listy wyboru do wykorzystania w klasie modelu
 MONTHS = models.IntegerChoices('Miesiace', 'Styczeń Luty Marzec Kwiecień Maj Czerwiec Lipiec Sierpień Wrzesień Październik Listopad Grudzień')
 
@@ -52,6 +56,7 @@ class Osoba(models.Model):
     data_urodzenia = models.DateField()
     stanowisko = models.ForeignKey(Stanowisko, on_delete=models.CASCADE)
     data_dodania = models.DateTimeField(auto_now_add=True)
+    wlasciciel = models.ForeignKey(User, on_delete=models.CASCADE, related_name='osoby')
 
     class Meta:
         verbose_name_plural = "Osoby"
@@ -59,3 +64,15 @@ class Osoba(models.Model):
 
     def __str__(self):
         return f"{self.imie} {self.nazwisko}"
+    
+    def clean(self):
+        if not re.match(r"^[A-Z][a-z]+$", self.imie, self.nazwisko):
+            raise ValidationError("Imię i nazwisko muszą zaczynać się z wielkiej litery.")
+        if self.wiek < 0:
+            raise ValidationError("Wiek nie może być ujemny.")
+        if self.data_urodzenia > datetime.date.today():
+            raise ValidationError("Data urodzenia nie może być z przyszłości.")
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
